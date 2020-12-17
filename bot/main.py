@@ -5,15 +5,15 @@ import aiohttp
 import time
 import random
 import wikipedia
-from inputs import responses, fortunes, quo, nerd, tech, rost, bk, cmp, blurt, cf, jk, cfe, chill, cl, ur
+from .inputs import responses, fortunes, quo, nerd, tech, rost, bk, cmp, blurt, cf, jk, cfe, chill, cl, ur
 import os
 import ssl
 import discord
 from discord.ext import commands, tasks
 from itertools import cycle
 
-from username import generate
-from joe_username import joe_generate
+from .username import generate
+from .joe_username import joe_generate
 
 from pymongo import MongoClient
 
@@ -27,7 +27,7 @@ from pymongo import MongoClient
 # Standard modules
 
 # TOKEN, MONGO URI are env-vars
-from utils import get_environment_variable
+from .utils import get_environment_variable
 
 
 DISCORD_BOT_TOKEN = get_environment_variable("DISCORD_BOT_TOKEN")
@@ -603,6 +603,7 @@ async def automeme(ctx):
         automeme_loops[channel_id] = loop
         loop.start(ctx)
 
+
 @client.command()
 async def automeme_cancel(ctx):
     '''Cancel the Automeme task in the current channel'''
@@ -613,6 +614,7 @@ async def automeme_cancel(ctx):
         automeme_loops[channel_id].cancel()
         del automeme_loops[channel_id]
         await ctx.send('Automeme canceled here')
+
 
 async def automeme_routine(ctx):
     '''
@@ -720,32 +722,36 @@ async def coffee(ctx):
     embed = discord.Embed(title='Coffee',
                           description=op,
                           color=discord.Color.red())
-    embed.set_footer(text=f'Caffeiene Level-{random.choice(cl)}.{random.choice(chill)}')
+    embed.set_footer(
+        text=f'Caffeiene Level-{random.choice(cl)}.{random.choice(chill)}')
     embed.set_image(url=random.choice(ur))
     await ctx.send(embed=embed)
 
 
-@client.command(aliases=['random-username','ru','random_username'])
-async def username(ctx, lim:int=30):
+@client.command(aliases=['random-username', 'ru', 'random_username'])
+async def username(ctx, lim: int = 30):
     op = generate(lim)
     if lim == 30:
-        op = generate(random.randint(20,50))
+        op = generate(random.randint(20, 50))
     embed = discord.Embed(title=op,
-            description='That sounds cool :',
-            color=discord.Color.dark_magenta())
+                          description='That sounds cool :',
+                          color=discord.Color.dark_magenta())
     await ctx.send(embed=embed)
 
-@client.command(aliases=['joe-username','ju'])
-async def joe_username(ctx, lim:int=4):
+
+@client.command(aliases=['joe-username', 'ju'])
+async def joe_username(ctx, lim: int = 4):
     op = joe_generate(lim)
     if lim == 4:
-        op = joe_generate(random.randint(3,11))
+        op = joe_generate(random.randint(3, 11))
     embed = discord.Embed(title=op,
-            description='That sounds cool, cool, cool.. Right.',
-            color=discord.Color.gold())
+                          description='That sounds cool, cool, cool.. Right.',
+                          color=discord.Color.gold())
     await ctx.send(embed=embed)
 
 # error_handling
+
+
 @client.event
 async def on_command_error(ctx, error):
     # TODO- Error Handling
